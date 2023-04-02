@@ -190,6 +190,7 @@ class ECAPA_TDNN(nn.Module):
         batch_size = x.size(0)
         x = x.view(batch_size, -1, 20, 80)
         T_len = x.size(1)
+        print(x.shape)
         x = x.view(batch_size * T_len, -1, 80).transpose(-1, -2)
         x = self.shared_TDNN(x)
         pho_x = x.transpose(-1, -2)
