@@ -5,7 +5,7 @@ This part is used to train the speaker model and evaluate the performances
 import torch, sys, os, tqdm, numpy, soundfile, time, pickle
 import torch.nn as nn
 from tools import *
-from loss import AAMsoftmaxm, Phoneme_SSL_loss
+from loss import AAMsoftmax, Phoneme_SSL_loss
 from model import ECAPA_TDNN
 
 class ECAPAModel(nn.Module):
