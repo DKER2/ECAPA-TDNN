@@ -32,7 +32,7 @@ class ECAPAModel(nn.Module):
 			labels            = torch.LongTensor(labels).cuda()
 			speaker_embedding, phonemes, seq_len = self.speaker_encoder.forward(data.cuda(), aug = True)
 			nloss, prec       = self.speaker_loss.forward(speaker_embedding, labels)
-			loss_phn = self.phoneme_loss.forward(phonemes, seq_len)	
+			loss_phn = self.phoneme_loss.forward(phonemes, seq_len)
 			loss = 0.05*loss_phn + 0.95*nloss
 			loss.backward()
 			self.optim.step()

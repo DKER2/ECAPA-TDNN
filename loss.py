@@ -43,7 +43,7 @@ class Phoneme_SSL_loss(nn.Module):
         sim_neg = F.cosine_similarity(anchors, negatives, dim=-1).reshape(-1, 19, self.num_sample)
         sim_all = torch.cat((sim_pos, sim_neg), dim=-1)
         loss_seg = torch.mean(torch.mean(-F.log_softmax(sim_all, dim=-1)[:,:, 0], dim=-1))
-        return 
+        return loss_seg
         
 class AAMsoftmax(nn.Module):
     def __init__(self, n_class, m, s):
