@@ -59,7 +59,7 @@ class train_loader(object):
 		elif augtype == 5: # Television noise
 			audio = self.add_noise(audio, 'speech')
 			audio = self.add_noise(audio, 'music')"""
-		return torch.FloatTensor(audio[0]), self.data_label[index]
+		return torch.FloatTensor(audio[0]), audio[0].shape[0], self.data_label[index]
 
 	def __len__(self):
 		return len(self.data_list)

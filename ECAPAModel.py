@@ -26,7 +26,7 @@ class ECAPAModel(nn.Module):
 		self.scheduler.step(epoch - 1)
 		index, top1, loss = 0, 0, 0
 		lr = self.optim.param_groups[0]['lr']
-		for num, (data, labels) in enumerate(loader, start = 1):
+		for num, (data, seq_len, labels) in enumerate(loader, start = 1):
 			self.zero_grad()
 			labels            = torch.LongTensor(labels).cuda()
 			speaker_embedding = self.speaker_encoder.forward(data.cuda(), aug = True)

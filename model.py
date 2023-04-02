@@ -143,7 +143,20 @@ class ECAPA_TDNN(nn.Module):
 
         self.specaug = FbankAug() # Spec augmentation
 
-        self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
+        #self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
+        self.shared_TDNN = nn.Sequential(nn.Dropout(p=dropout),
+                                    nn.Conv1d(in_channels=80, out_channels=512, kernel_size=1),
+                                    nn.ReLU(),
+                                    nn.BatchNorm1d(512, momentum=0.1, affine=True),
+                                    nn.Conv1d(in_channels=512, out_channels=512, kernel_size=1),
+                                    nn.ReLU(),
+                                    nn.BatchNorm1d(512, momentum=0.1, affine=True),
+                                    nn.Conv1d(in_channels=512, out_channels=512, kernel_size=1),
+                                    nn.ReLU(),
+                                    nn.BatchNorm1d(512, momentum=0.1, affine=True),
+                                )
+        self.phoneme_proj = nn.Linear(512, 64)
+
         self.relu   = nn.ReLU()
         self.bn1    = nn.BatchNorm1d(C)
         self.layer1 = Bottle2neck(C, C, kernel_size=3, dilation=2, scale=8)
@@ -172,7 +185,7 @@ class ECAPA_TDNN(nn.Module):
             if aug == True:
                 x = self.specaug(x)
 
-        x = self.conv1(x)
+        x = self.shared_TDNN(x)
         x = self.relu(x)
         x = self.bn1(x)
 
