@@ -25,7 +25,7 @@ class ECAPAModel(nn.Module):
 		self.train()
 		## Update the learning rate based on the current epcoh
 		self.scheduler.step(epoch - 1)
-		index, top1, loss = 0, 0, 0
+		index, top1, loss_sum = 0, 0, 0
 		lr = self.optim.param_groups[0]['lr']
 		for num, (data, seq_len, labels) in enumerate(loader, start = 1):
 			self.zero_grad()
