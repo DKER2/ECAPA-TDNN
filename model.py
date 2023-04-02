@@ -144,7 +144,7 @@ class ECAPA_TDNN(nn.Module):
         self.specaug = FbankAug() # Spec augmentation
 
         #self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
-        self.shared_TDNN = nn.Sequential(nn.Dropout(p=dropout),
+        self.shared_TDNN = nn.Sequential(nn.Dropout(p=0.1),
                                     nn.Conv1d(in_channels=80, out_channels=512, kernel_size=1),
                                     nn.ReLU(),
                                     nn.BatchNorm1d(512, momentum=0.1, affine=True),
