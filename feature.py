@@ -1,5 +1,5 @@
 import torch
-import s3prl
+import s3prl.hub as hub
 class SSLUpstream(nn.Module):
     def __init__(self, upstream_model='xlsr_53', hidden_state=16, finetune=False):
         super(SSLUpstream, self).__init__()
