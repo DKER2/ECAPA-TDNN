@@ -188,7 +188,7 @@ class ECAPA_TDNN(nn.Module):
                 x = self.specaug(x)"""
             x = self.torchfbank(x, x_len)
             #x = x.transpose(-1, -2)
-
+        print(x.shape, x_len)
         
         x = self.shared_TDNN(x)
         x_pho = x.transpose(-1, -2)
