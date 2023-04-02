@@ -77,7 +77,7 @@ class ECAPAModel(nn.Module):
 			with torch.no_grad():
 				embedding_1, pho_out, seg_len = self.speaker_encoder.forward(data_1, aug = False)
 				embedding_1 = F.normalize(embedding_1, p=2, dim=1)
-				embedding_1, pho_out, seg_len = self.speaker_encoder.forward(data_2, aug = False)
+				embedding_2, pho_out, seg_len = self.speaker_encoder.forward(data_2, aug = False)
 				embedding_2 = F.normalize(embedding_2, p=2, dim=1)
 			embeddings[file] = [embedding_1, embedding_2]
 		scores, labels  = [], []
