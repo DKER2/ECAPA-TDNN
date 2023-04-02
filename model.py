@@ -187,7 +187,7 @@ class ECAPA_TDNN(nn.Module):
 
         x = self.shared_TDNN(x)
         pho_x = x.transpose(-1, -2)
-        pho_out = self.phoneme_proj(x) 
+        pho_out = self.phoneme_proj(pho_x) 
 
 
         x = self.relu(x)
