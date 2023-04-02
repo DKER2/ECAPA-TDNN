@@ -191,7 +191,7 @@ class ECAPA_TDNN(nn.Module):
         x = x.view(batch_size, -1, 20, 80)
         T_len = x.size(1)
         print(x.shape)
-        x = x.view(batch_size * T_len, -1, 80).transpose(-1, -2)
+        x = x.reshape(batch_size * T_len, -1, 80).transpose(-1, -2)
         x = self.shared_TDNN(x)
         pho_x = x.transpose(-1, -2)
         pho_out = self.phoneme_proj(pho_x) 
