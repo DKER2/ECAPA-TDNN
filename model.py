@@ -10,7 +10,7 @@ This model is modified and combined based on the following three projects:
 import math, torch, torchaudio
 import torch.nn as nn
 import torch.nn.functional as F
-
+from feature import SSLUpstream
 
 class SEModule(nn.Module):
     def __init__(self, channels, bottleneck=128):
@@ -135,13 +135,14 @@ class ECAPA_TDNN(nn.Module):
 
         super(ECAPA_TDNN, self).__init__()
 
-        self.torchfbank = torch.nn.Sequential(
+        """self.torchfbank = torch.nn.Sequential(
             PreEmphasis(),            
             torchaudio.transforms.MelSpectrogram(sample_rate=16000, n_fft=512, win_length=400, hop_length=160, \
                                                  f_min = 20, f_max = 7600, window_fn=torch.hamming_window, n_mels=80),
             )
 
-        self.specaug = FbankAug() # Spec augmentation
+        self.specaug = FbankAug() # Spec augmentation"""
+        self.torchfbank = SSLUpstream()
 
         #self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
         self.shared_TDNN = nn.Sequential(nn.Dropout(p=0.1),
@@ -180,11 +181,12 @@ class ECAPA_TDNN(nn.Module):
 
     def forward(self, x, aug):
         with torch.no_grad():
-            x = self.torchfbank(x)+1e-6
+            """ x = self.torchfbank(x)+1e-6
             x = x.log()   
             x = x - torch.mean(x, dim=-1, keepdim=True)
             if aug == True:
-                x = self.specaug(x)
+                x = self.specaug(x)"""
+            x = self.torchfbank(x)
             #x = x.transpose(-1, -2)
 
         
