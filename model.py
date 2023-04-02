@@ -186,7 +186,7 @@ class ECAPA_TDNN(nn.Module):
                 x = self.specaug(x)
 
         batch_size = x.size(0)
-        T_len = x.size(1)
+        T_len = x.size(2)
         x = self.shared_TDNN(x)
         pho_x = x.transpose(-1, -2)
         pho_out = self.phoneme_proj(pho_x) 
