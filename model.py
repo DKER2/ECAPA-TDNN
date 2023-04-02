@@ -146,7 +146,7 @@ class ECAPA_TDNN(nn.Module):
 
         #self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
         self.shared_TDNN = nn.Sequential(nn.Dropout(p=0.1),
-                                    nn.Conv1d(in_channels=80, out_channels=C, kernel_size=1),
+                                    nn.Conv1d(in_channels=1024, out_channels=C, kernel_size=1),
                                     nn.ReLU(),
                                     nn.BatchNorm1d(C, momentum=0.1, affine=True),
                                     nn.Conv1d(in_channels=C, out_channels=C, kernel_size=1),
@@ -157,7 +157,7 @@ class ECAPA_TDNN(nn.Module):
                                     nn.BatchNorm1d(C, momentum=0.1, affine=True),
                                 )
         self.phoneme_proj = nn.Linear(C, 64)
-        self.fc_xv = nn.Linear(C, 80)
+        self.fc_xv = nn.Linear(C, 1024)
 
         self.relu   = nn.ReLU()
         self.bn1    = nn.BatchNorm1d(C)
