@@ -41,7 +41,7 @@ class ECAPAModel(nn.Module):
 			loss_sum += loss.detach().cpu().numpy()
 			sys.stderr.write(time.strftime("%m-%d %H:%M:%S") + \
 			" [%2d] Lr: %5f, Training: %.2f%%, "    %(epoch, lr, 100 * (num / loader.__len__())) + \
-			" Loss: %.5f, ACC: %2.2f%% \r"        %(loss_sum/(num), top1/index*len(labels)))
+			" Loss: %.5f, Loss_Pho %.5f, ACC: %2.2f%% \r"        %(loss_sum/(num), loss_phn, top1/index*len(labels)))
 			sys.stderr.flush()
 		sys.stdout.write("\n")
 		return loss_sum/num, lr, top1/index*len(labels)
