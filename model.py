@@ -196,7 +196,7 @@ class ECAPA_TDNN(nn.Module):
         T_len = x_pho.size(1)
         x_pho = x_pho.reshape(batch_size * T_len, -1, 1024)
         print(x_pho.shape)
-        pho_out = self.phoneme_proj(pho_x)
+        pho_out = self.phoneme_proj(x_pho)
 
 
         x = self.relu(x)
