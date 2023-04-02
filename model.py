@@ -155,7 +155,7 @@ class ECAPA_TDNN(nn.Module):
                                     nn.ReLU(),
                                     nn.BatchNorm1d(C, momentum=0.1, affine=True),
                                 )
-        self.phoneme_proj = nn.Linear(512, 64)
+        self.phoneme_proj = nn.Linear(C, 64)
 
         self.relu   = nn.ReLU()
         self.bn1    = nn.BatchNorm1d(C)
