@@ -156,6 +156,7 @@ class ECAPA_TDNN(nn.Module):
                                     nn.BatchNorm1d(C, momentum=0.1, affine=True),
                                 )
         self.phoneme_proj = nn.Linear(C, 64)
+        self.fc_xv = nn.Linear(C, 80)
 
         self.relu   = nn.ReLU()
         self.bn1    = nn.BatchNorm1d(C)
@@ -184,18 +185,18 @@ class ECAPA_TDNN(nn.Module):
             x = x - torch.mean(x, dim=-1, keepdim=True)
             if aug == True:
                 x = self.specaug(x)
-            x = x.transpose(-1, -2)
+            #x = x.transpose(-1, -2)
 
-        x = x[:, :x.size(1)//20*20,:]
-        batch_size = x.size(0)
-        x = x.view(batch_size, -1, 20, 80)
-        T_len = x.size(1)
-        x = x.reshape(batch_size * T_len, -1, 80).transpose(-1, -2)
-        print(x.shape)
-        x = self.shared_TDNN(x)
         
-        pho_x = x.transpose(-1, -2)
-        pho_out = self.phoneme_proj(pho_x) 
+        x = self.shared_TDNN(x)
+        x_pho = x.transpose(-1, -2)
+        x_pho = x_pho[:, :x_pho.size(1)//20*20,:]
+        batch_size = x_pho.size(0)
+        x_pho = x_pho.view(batch_size, -1, 20, 1024)
+        T_len = x_pho.size(1)
+        x_pho = x_pho.reshape(batch_size * T_len, -1, 1024)
+        print(x_pho.shape)
+        pho_out = self.phoneme_proj(pho_x)
 
 
         x = self.relu(x)
