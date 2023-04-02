@@ -186,6 +186,10 @@ class ECAPA_TDNN(nn.Module):
                 x = self.specaug(x)
 
         x = self.shared_TDNN(x)
+        pho_x = x.transpose(-1, -2)
+        pho_out = self.phoneme_proj(x) 
+
+
         x = self.relu(x)
         x = self.bn1(x)
 
@@ -210,4 +214,4 @@ class ECAPA_TDNN(nn.Module):
         x = self.fc6(x)
         x = self.bn6(x)
 
-        return x
+        return x, pho_out.reshape(batch_size, T_len, -1, 64), torch.LongTensor([T_len]*batch_size)

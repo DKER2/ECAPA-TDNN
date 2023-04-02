@@ -5,7 +5,7 @@ This part is used to train the speaker model and evaluate the performances
 import torch, sys, os, tqdm, numpy, soundfile, time, pickle
 import torch.nn as nn
 from tools import *
-from loss import AAMsoftmax
+from loss import AAMsoftmaxm, Phoneme_SSL_loss
 from model import ECAPA_TDNN
 
 class ECAPAModel(nn.Module):
@@ -15,6 +15,7 @@ class ECAPAModel(nn.Module):
 		self.speaker_encoder = ECAPA_TDNN(C = C).cuda()
 		## Classifier
 		self.speaker_loss    = AAMsoftmax(n_class = n_class, m = m, s = s).cuda()
+		self.phoneme_loss    = Phoneme_SSL_loss(num_frames=20, num_sample=3).cuda()
 
 		self.optim           = torch.optim.Adam(self.parameters(), lr = lr, weight_decay = 2e-5)
 		self.scheduler       = torch.optim.lr_scheduler.StepLR(self.optim, step_size = test_step, gamma=lr_decay)
@@ -29,19 +30,21 @@ class ECAPAModel(nn.Module):
 		for num, (data, seq_len, labels) in enumerate(loader, start = 1):
 			self.zero_grad()
 			labels            = torch.LongTensor(labels).cuda()
-			speaker_embedding = self.speaker_encoder.forward(data.cuda(), aug = True)
-			nloss, prec       = self.speaker_loss.forward(speaker_embedding, labels)			
-			nloss.backward()
+			speaker_embedding, phonemes, seq_len = self.speaker_encoder.forward(data.cuda(), aug = True)
+			nloss, prec       = self.speaker_loss.forward(speaker_embedding, labels)
+			loss_phn = self.phoneme_loss.forward(phonemes, seq_len)	
+			loss = self.0.05*loss_phn + self.0.95*nloss
+			loss.backward()
 			self.optim.step()
 			index += len(labels)
 			top1 += prec
-			loss += nloss.detach().cpu().numpy()
+			loss_sum += loss.detach().cpu().numpy()
 			sys.stderr.write(time.strftime("%m-%d %H:%M:%S") + \
 			" [%2d] Lr: %5f, Training: %.2f%%, "    %(epoch, lr, 100 * (num / loader.__len__())) + \
-			" Loss: %.5f, ACC: %2.2f%% \r"        %(loss/(num), top1/index*len(labels)))
+			" Loss: %.5f, ACC: %2.2f%% \r"        %(loss_sum/(num), top1/index*len(labels)))
 			sys.stderr.flush()
 		sys.stdout.write("\n")
-		return loss/num, lr, top1/index*len(labels)
+		return loss_sum/num, lr, top1/index*len(labels)
 
 	def eval_network(self, eval_list, eval_path):
 		self.eval()
