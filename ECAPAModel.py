@@ -35,7 +35,7 @@ class ECAPAModel(nn.Module):
 			loss_phn = self.phoneme_loss.forward(phonemes, seq_len)
 			if epoch==1:
 				loss = loss_phn
-			elif:
+			else:
 				loss = 0.1*loss_phn + 0.9*nloss
 			loss.backward()
 			self.optim.step()
