@@ -179,14 +179,14 @@ class ECAPA_TDNN(nn.Module):
         self.bn6 = nn.BatchNorm1d(192)
 
 
-    def forward(self, x, aug):
+    def forward(self, x, x_len, aug):
         with torch.no_grad():
             """ x = self.torchfbank(x)+1e-6
             x = x.log()   
             x = x - torch.mean(x, dim=-1, keepdim=True)
             if aug == True:
                 x = self.specaug(x)"""
-            x = self.torchfbank(x)
+            x = self.torchfbank(x, x_len)
             #x = x.transpose(-1, -2)
 
         
