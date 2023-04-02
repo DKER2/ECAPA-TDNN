@@ -20,4 +20,4 @@ class SSLUpstream(nn.Module):
         while self.hidden_state not in x.keys():
             x = self.upstream(x_input)
         x = x[self.hidden_state]
-        return 
+        return x
