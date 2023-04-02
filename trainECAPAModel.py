@@ -54,7 +54,7 @@ modelfiles.sort()
 if args.eval == True:
 	s = ECAPAModel(**vars(args))
 	print("Model %s loaded from previous state!"%args.initial_model)
-	s.load_parameters(args.initial_model)
+	#s.load_parameters(args.initial_model)
 	EER, minDCF = s.eval_network(eval_list = args.eval_list, eval_path = args.eval_path)
 	print("EER %2.2f%%, minDCF %.4f%%"%(EER, minDCF))
 	quit()
