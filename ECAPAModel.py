@@ -33,7 +33,7 @@ class ECAPAModel(nn.Module):
 			speaker_embedding, phonemes, seq_len = self.speaker_encoder.forward(data.cuda(), seq_len, aug = True)
 			nloss, prec       = self.speaker_loss.forward(speaker_embedding, labels)
 			loss_phn = self.phoneme_loss.forward(phonemes, seq_len)
-			loss = loss_phn
+			loss = 0.1*loss_phn + 0.9*nloss
 			loss.backward()
 			self.optim.step()
 			index += len(labels)
