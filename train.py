@@ -64,7 +64,7 @@ trainer = Trainer(
         log_every_n_steps=25,
         )
 
-if checkpoint_path is not None:
+if initial_model is not None:
         iteration = trainer.load_checkpoint(initial_model)
         iteration += 1  # next iteration is iteration + 1
 trainer.fit(model, train_dataloaders=trainLoader)
