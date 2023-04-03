@@ -44,7 +44,8 @@ args = init_args(args)
 
 trainloader = train_loader(**vars(args))
 trainLoader = torch.utils.data.DataLoader(trainloader, batch_size = args.batch_size, shuffle = True, num_workers = args.n_cpu, drop_last = True)
-print(args)
+print(**args)
+print(**args.__dict__)
 model = Task(**args.__dict__)
 
 checkpoint_callback = ModelCheckpoint(monitor='train_loss', save_top_k=2,
