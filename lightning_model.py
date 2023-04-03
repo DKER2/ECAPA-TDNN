@@ -8,6 +8,7 @@ from model import ECAPA_TDNN
 from tqdm import tqdm
 import soundfile
 import torch, sys, os, numpy, soundfile, time, pickle
+from tools import *
 
 class Task(LightningModule):
     def __init__( self, lr, lr_decay, C , n_class, m, s, test_step, **kwargs):
