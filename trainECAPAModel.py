@@ -50,8 +50,7 @@ trainLoader = torch.utils.data.DataLoader(trainloader, batch_size = args.batch_s
 modelfiles = glob.glob('%s/model_0*.model'%args.model_save_path)
 modelfiles.sort()
 
-epoch = 1
-s = ECAPAModel(**vars(args))
+
 ## Only do evaluation, the initial_model is necessary
 if args.eval == True:
 	s = ECAPAModel(**vars(args))
@@ -68,14 +67,16 @@ if args.initial_model != "":
 	s.load_parameters(args.initial_model)
 	epoch = 1
 
-"""## Otherwise, system will try to start from the saved model&epoch
+## Otherwise, system will try to start from the saved model&epoch
 elif len(modelfiles) >= 1:
 	print("Model %s loaded from previous state!"%modelfiles[-1])
 	epoch = int(os.path.splitext(os.path.basename(modelfiles[-1]))[0][6:]) + 1
 	s = ECAPAModel(**vars(args))
 	s.load_parameters(modelfiles[-1])
 ## Otherwise, system will train from scratch
-else:"""
+else:
+	epoch = 1
+	s = ECAPAModel(**vars(args))
 
 EERs = []
 score_file = open(args.score_save_path, "a+")
