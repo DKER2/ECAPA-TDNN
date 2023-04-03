@@ -2,7 +2,7 @@ import argparse, glob, os, torch, warnings, time
 from tools import *
 from dataLoader import train_loader
 from pytorch_lightning.plugins import DDPPlugin
-from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor
 from lightning_model import Task
 
 parser = argparse.ArgumentParser(description = "ECAPA_trainer")
