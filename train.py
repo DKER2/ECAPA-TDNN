@@ -4,6 +4,7 @@ from dataLoader import train_loader
 from pytorch_lightning.plugins import DDPPlugin
 from pytorch_lightning.callbacks import ModelCheckpoint, LearningRateMonitor
 from lightning_model import Task
+from pytorch_lightning import LightningModule, Trainer
 
 parser = argparse.ArgumentParser(description = "ECAPA_trainer")
 ## Training Settings
