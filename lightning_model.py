@@ -22,7 +22,7 @@ class Task(LightningModule):
         self.eval_path=kwargs['eval_path']
     
     def training_step(self, batch, batch_idx):
-        data, seq_len, labels = batch
+        data, seq_len, labels = batch.cuda()
         labels = torch.LongTensor(labels)
         speaker_embedding, phonemes, seq_len = self.speaker_encoder.forward(data, aug = True)
         nloss, prec  = self.speaker_loss.forward(speaker_embedding, labels)
