@@ -38,7 +38,7 @@ class Task(LightningModule):
 
     def on_train_epoch_end(self):
         self.epoch = self.epoch + 1
-        eval_network(self.eval_list, self.eval_path)
+        self.eval_network(self.eval_list, self.eval_path)
 
     def eval_network(self, eval_list, eval_path):
         self.speaker_encoder.eval()
