@@ -64,6 +64,7 @@ trainer = Trainer(
         log_every_n_steps=25,
         )
 
+model
 if args.initial_model is not None:
         iteration = trainer.load_checkpoint(args.initial_model)
         iteration += 1  # next iteration is iteration + 1

@@ -5,6 +5,7 @@ import numpy as np
 from pytorch_lightning import LightningModule, Trainer, seed_everything
 from loss import AAMsoftmax, Phoneme_SSL_loss
 from model import ECAPA_TDNN
+from tqdm import tqdm
 
 class Task(LightningModule):
     def __init__( self, lr, lr_decay, C , n_class, m, s, test_step, **kwargs):
@@ -51,7 +52,7 @@ class Task(LightningModule):
         setfiles = list(set(files))
         setfiles.sort()
 
-        for idx, file in tqdm.tqdm(enumerate(setfiles), total = len(setfiles)):
+        for idx, file in tqdm(enumerate(setfiles), total = len(setfiles)):
             audio, _  = soundfile.read(os.path.join(eval_path, file))
             # Full utterance
             data_1 = torch.FloatTensor(numpy.stack([audio],axis=0)).cuda()
