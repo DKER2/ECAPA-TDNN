@@ -44,7 +44,7 @@ args = init_args(args)
 
 trainloader = train_loader(**vars(args))
 trainLoader = torch.utils.data.DataLoader(trainloader, batch_size = args.batch_size, shuffle = True, num_workers = args.n_cpu, drop_last = True)
-Task(**args.__dict__)
+model = Task(**args.__dict__)
 
 checkpoint_callback = ModelCheckpoint(monitor='cosine_eer', save_top_k=100,
            filename="{epoch}_{cosine_eer:.2f}", dirpath=args.save_path)
