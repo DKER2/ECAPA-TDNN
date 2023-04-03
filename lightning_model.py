@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-import numpy as np
+import numpy 
 
 from pytorch_lightning import LightningModule, Trainer, seed_everything
 from loss import AAMsoftmax, Phoneme_SSL_loss
