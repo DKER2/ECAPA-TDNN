@@ -59,6 +59,7 @@ trainer = Trainer(
         sync_batchnorm=True,
         callbacks=[checkpoint_callback, lr_monitor],
         default_root_dir=args.save_path,
+        resume_from_checkpoint=args.initial_model,
         reload_dataloaders_every_n_epochs=1,
         accumulate_grad_batches=1,
         log_every_n_steps=25,
@@ -66,6 +67,6 @@ trainer = Trainer(
 
 
 if args.initial_model is not None:
-        iteration = model.load_checkpoint(args.initial_model)
+        iteration = trainer.load_checkpoint(args.initial_model)
         iteration += 1  # next iteration is iteration + 1
 trainer.fit(model, train_dataloaders=trainLoader)
