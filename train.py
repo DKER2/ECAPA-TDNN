@@ -66,6 +66,6 @@ trainer = Trainer(
         )
 
 
-if args.initial_model is not None:
-        model = model.load_from_checkpoint(args.initial_model)
+"""if args.initial_model is not None:
+        model = model.load_from_checkpoint(args.initial_model)"""
 trainer.fit(model, train_dataloaders=trainLoader)
