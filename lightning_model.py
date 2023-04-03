@@ -6,6 +6,7 @@ from pytorch_lightning import LightningModule, Trainer, seed_everything
 from loss import AAMsoftmax, Phoneme_SSL_loss
 from model import ECAPA_TDNN
 from tqdm import tqdm
+import soundfile
 
 class Task(LightningModule):
     def __init__( self, lr, lr_decay, C , n_class, m, s, test_step, **kwargs):
