@@ -24,9 +24,9 @@ class Task(LightningModule):
     def training_step(self, batch, batch_idx):
         data, seq_len, labels = batch
         #labels = torch.LongTensor(labels)
-        speaker_embedding, phonemes, seq_len = self.speaker_encoder.forward(data, aug = True)
-        nloss, prec  = self.speaker_loss.forward(speaker_embedding, labels)
-        loss_phn = self.phoneme_loss.forward(phonemes, seq_len)
+        speaker_embedding, phonemes, seq_len = self.speaker_encoder.forward(data.cuda(), seq_len, aug = True)
+			nloss, prec       = self.speaker_loss.forward(speaker_embedding, labels)
+			loss_phn = self.phoneme_loss.forward(phonemes, seq_len)
         loss = loss_phn
         self.log('train_loss', loss, prog_bar=True)
         self.log('acc', prec, prog_bar=True)
