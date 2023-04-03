@@ -67,5 +67,5 @@ trainer = Trainer(
 
 
 if args.initial_model is not None:
-        model = trainer.load_from_checkpoint(args.initial_model)
+        model = model.load_from_checkpoint(args.initial_model)
 trainer.fit(model, train_dataloaders=trainLoader)
