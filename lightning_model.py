@@ -14,7 +14,7 @@ class Task(LightningModule):
     def __init__(self, config):
         super().__init__()
         ## ECAPA-TDNN
-        self.speaker_encoder = ECAPA_TDNN(C = C).cuda()
+        self.speaker_encoder = ECAPA_TDNN(C = config['C']).cuda()
         ## Classifier
         self.speaker_loss    = AAMsoftmax(n_class = config['n_class'], m = config['m'], s = config['s']).cuda()
         self.phoneme_loss    = Phoneme_SSL_loss(num_frames=20, num_sample=3).cuda()
