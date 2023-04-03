@@ -11,19 +11,19 @@ import torch, sys, os, numpy, soundfile, time, pickle
 from tools import *
 
 class Task(LightningModule):
-    def __init__( self, lr, lr_decay, C , n_class, m, s, test_step, **kwargs):
+    def __init__( self, config):
         super().__init__()
         ## ECAPA-TDNN
         self.speaker_encoder = ECAPA_TDNN(C = C).cuda()
         ## Classifier
-        self.speaker_loss    = AAMsoftmax(n_class = n_class, m = m, s = s).cuda()
+        self.speaker_loss    = AAMsoftmax(n_class = config['n_class'], m = config['m'], s = config['s']).cuda()
         self.phoneme_loss    = Phoneme_SSL_loss(num_frames=20, num_sample=3).cuda()
 
-        self.optim           = torch.optim.Adam(self.parameters(), lr = lr, weight_decay = 2e-5)
-        self.scheduler       = torch.optim.lr_scheduler.StepLR(self.optim, step_size = test_step, gamma=lr_decay)
+        self.optim           = torch.optim.Adam(self.parameters(), lr = config['lr'], weight_decay = 2e-5)
+        self.scheduler       = torch.optim.lr_scheduler.StepLR(self.optim, step_size = config['test_step'], gamma=config['lr_decay'])
 
-        self.eval_list=kwargs['eval_list']
-        self.eval_path=kwargs['eval_path']
+        self.eval_list=config['eval_list']
+        self.eval_path=config['eval_path']
         self.epoch=0
     
     def training_step(self, batch, batch_idx):
