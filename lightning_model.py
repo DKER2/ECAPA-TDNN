@@ -32,7 +32,7 @@ class Task(LightningModule):
         speaker_embedding, phonemes, seq_len = self.speaker_encoder.forward(data.cuda(), seq_len, aug = True)
         nloss, prec       = self.speaker_loss.forward(speaker_embedding, labels)
         loss_phn = self.phoneme_loss.forward(phonemes, seq_len)
-        if self.epoch<=1:
+        if self.epoch<1:
             loss = loss_phn
         else:
             loss = 0.1*loss_phn + 0.9*nloss
