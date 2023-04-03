@@ -2,6 +2,7 @@ import argparse, glob, os, torch, warnings, time
 from tools import *
 from dataLoader import train_loader
 from pytorch_lightning.plugins import DDPPlugin
+from pytorch_lightning.callbacks import ModelCheckpoint
 from lightning_model import Task
 
 parser = argparse.ArgumentParser(description = "ECAPA_trainer")
@@ -43,11 +44,6 @@ args = init_args(args)
 trainloader = train_loader(**vars(args))
 trainLoader = torch.utils.data.DataLoader(trainloader, batch_size = args.batch_size, shuffle = True, num_workers = args.n_cpu, drop_last = True)
 Task(**args.__dict__)
-
-if args.initial_model is not None:
-    state_dict = torch.load(args.initial_model, map_location="cpu")["state_dict"]
-    model.load_state_dict(state_dict, strict=True)
-    print("load weight from {}".format(args.initial_model))
 
 checkpoint_callback = ModelCheckpoint(monitor='cosine_eer', save_top_k=100,
            filename="{epoch}_{cosine_eer:.2f}", dirpath=args.save_dir)
