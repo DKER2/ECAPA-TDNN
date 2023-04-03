@@ -8,7 +8,7 @@ from model import ECAPA_TDNN
 
 class Task(LightningModule):
     def __init__( self, lr, lr_decay, C , n_class, m, s, test_step, **kwargs):
-        super(self).__init__()
+        super().__init__()
         ## ECAPA-TDNN
         self.speaker_encoder = ECAPA_TDNN(C = C).cuda()
         ## Classifier
