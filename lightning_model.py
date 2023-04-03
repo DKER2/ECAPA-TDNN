@@ -20,6 +20,7 @@ class Task(LightningModule):
 
         self.eval_list=kwargs['eval_list']
         self.eval_path=kwargs['eval_path']
+        self.epoch=0
     
     def training_step(self, batch, batch_idx):
         data, seq_len, labels = batch
@@ -27,12 +28,16 @@ class Task(LightningModule):
         speaker_embedding, phonemes, seq_len = self.speaker_encoder.forward(data.cuda(), seq_len, aug = True)
         nloss, prec       = self.speaker_loss.forward(speaker_embedding, labels)
         loss_phn = self.phoneme_loss.forward(phonemes, seq_len)
-        loss = loss_phn
+        if self.epoch<=2:
+            loss = loss_phn
+        else:
+            loss = 0.1*loss_phn + 0.9*nloss
         self.log('train_loss', loss, prog_bar=True)
         self.log('acc', prec, prog_bar=True)
         return loss
 
     def on_training_epoch_end(self):
+        self.epoch = self.epoch + 1
         eval_network(self.eval_list, self.eval_path)
 
     def eval_network(self, eval_list, eval_path):
