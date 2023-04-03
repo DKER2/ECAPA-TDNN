@@ -21,7 +21,7 @@ parser.add_argument('--train_path', type=str,   default="datasets/train_set/voxc
 parser.add_argument('--eval_list',  type=str,   default="datasets/veri_test2.txt",              help='The path of the evaluation list, veri_test2.txt comes from https://www.robots.ox.ac.uk/~vgg/data/voxceleb/meta/veri_test2.txt')
 parser.add_argument('--eval_path',  type=str,   default="datasets/test_set_voxceleb1",                    help='The path of the evaluation data, eg:"/data08/VoxCeleb1/test/wav" in my case')
 parser.add_argument('--musan_path', type=str,   default=None,                    help='The path to the MUSAN set, eg:"/data08/Others/musan_split" in my case')
-parser.add_argument('--rir_path',   type=str,   default=None,     help='The path to the RIR set, eg:"/data08/Others/RIRS_NOISES/simulated_rirs" in my case');
+parser.add_argument('--rir_path',   type=str,   default=None,     help='The path to the RIR set, eg:"/data08/Others/RIRS_NOISES/simulated_rirs" in my case')
 parser.add_argument('--save_path',  type=str,   default="exps/exp1",                                     help='Path to save the score.txt and models')
 parser.add_argument('--initial_model',  type=str,   default=None,                                          help='Path of the initial_model')
 
@@ -46,7 +46,7 @@ trainLoader = torch.utils.data.DataLoader(trainloader, batch_size = args.batch_s
 Task(**args.__dict__)
 
 checkpoint_callback = ModelCheckpoint(monitor='cosine_eer', save_top_k=100,
-           filename="{epoch}_{cosine_eer:.2f}", dirpath=args.save_dir)
+           filename="{epoch}_{cosine_eer:.2f}", dirpath=args.save_path)
 lr_monitor = LearningRateMonitor(logging_interval='step')
 
 AVAIL_GPUS = torch.cuda.device_count()
@@ -57,7 +57,7 @@ trainer = Trainer(
         num_sanity_val_steps=0,
         sync_batchnorm=True,
         callbacks=[checkpoint_callback, lr_monitor],
-        default_root_dir=args.save_dir,
+        default_root_dir=args.save_path,
         reload_dataloaders_every_n_epochs=1,
         accumulate_grad_batches=1,
         log_every_n_steps=25,
