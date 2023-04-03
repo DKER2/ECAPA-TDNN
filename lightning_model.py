@@ -13,11 +13,11 @@ class Task(LightningModule):
         self.speaker_encoder = ECAPA_TDNN(C = C)
 
         ## Classifier
-		self.speaker_loss    = AAMsoftmax(n_class = n_class, m = m, s = s)
-		self.phoneme_loss    = Phoneme_SSL_loss(num_frames=20, num_sample=3)
+		self.speaker_loss = AAMsoftmax(n_class = n_class, m = m, s = s)
+		self.phoneme_loss = Phoneme_SSL_loss(num_frames=20, num_sample=3)
 
-        self.optim           = torch.optim.Adam(self.parameters(), lr = lr, weight_decay = 2e-5)
-		self.scheduler       = torch.optim.lr_scheduler.StepLR(self.optim, step_size = test_step, gamma=lr_decay)
+        self.optim = torch.optim.Adam(self.parameters(), lr = lr, weight_decay = 2e-5)
+		self.scheduler = torch.optim.lr_scheduler.StepLR(self.optim, step_size = test_step, gamma=lr_decay)
 
         self.eval_list=kwargs['eval_list']
         self.eval_path=kwargs['eval_path']
