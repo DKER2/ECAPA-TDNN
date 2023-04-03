@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-import numpy 
 
 import torch.nn.functional as F
 from pytorch_lightning import LightningModule, Trainer, seed_everything
@@ -8,7 +7,7 @@ from loss import AAMsoftmax, Phoneme_SSL_loss
 from model import ECAPA_TDNN
 from tqdm import tqdm
 import soundfile
-import os
+import torch, sys, os, numpy, soundfile, time, pickle
 
 class Task(LightningModule):
     def __init__( self, lr, lr_decay, C , n_class, m, s, test_step, **kwargs):
