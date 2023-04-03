@@ -46,8 +46,8 @@ trainloader = train_loader(**vars(args))
 trainLoader = torch.utils.data.DataLoader(trainloader, batch_size = args.batch_size, shuffle = True, num_workers = args.n_cpu, drop_last = True)
 model = Task(**args.__dict__)
 
-checkpoint_callback = ModelCheckpoint(monitor='cosine_eer', save_top_k=100,
-           filename="{epoch}_{cosine_eer:.2f}", dirpath=args.save_path)
+checkpoint_callback = ModelCheckpoint(monitor='train_loss', save_top_k=2,
+           filename="{epoch}_{train_loss:.2f}", dirpath=args.save_path)
 lr_monitor = LearningRateMonitor(logging_interval='step')
 
 AVAIL_GPUS = torch.cuda.device_count()
@@ -63,4 +63,8 @@ trainer = Trainer(
         accumulate_grad_batches=1,
         log_every_n_steps=25,
         )
+
+if checkpoint_path is not None:
+        iteration = trainer.load_checkpoint(initial_model)
+        iteration += 1  # next iteration is iteration + 1
 trainer.fit(model, train_dataloaders=trainLoader)

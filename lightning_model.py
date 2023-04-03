@@ -36,7 +36,7 @@ class Task(LightningModule):
         self.log('acc', prec, prog_bar=True)
         return loss
 
-    def on_training_epoch_end(self):
+    def on_train_epoch_end(self):
         self.epoch = self.epoch + 1
         eval_network(self.eval_list, self.eval_path)
 
