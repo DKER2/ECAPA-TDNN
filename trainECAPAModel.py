@@ -50,6 +50,8 @@ trainLoader = torch.utils.data.DataLoader(trainloader, batch_size = args.batch_s
 modelfiles = glob.glob('%s/model_0*.model'%args.model_save_path)
 modelfiles.sort()
 
+epoch = 1
+s = ECAPAModel(**vars(args))
 ## Only do evaluation, the initial_model is necessary
 if args.eval == True:
 	s = ECAPAModel(**vars(args))
@@ -74,8 +76,6 @@ elif len(modelfiles) >= 1:
 	s.load_parameters(modelfiles[-1])
 ## Otherwise, system will train from scratch
 else:"""
-epoch = 1
-s = ECAPAModel(**vars(args))
 
 EERs = []
 score_file = open(args.score_save_path, "a+")
