@@ -22,7 +22,7 @@ parser.add_argument('--eval_path',  type=str,   default="datasets/test_set_voxce
 parser.add_argument('--musan_path', type=str,   default=None,                    help='The path to the MUSAN set, eg:"/data08/Others/musan_split" in my case')
 parser.add_argument('--rir_path',   type=str,   default=None,     help='The path to the RIR set, eg:"/data08/Others/RIRS_NOISES/simulated_rirs" in my case');
 parser.add_argument('--save_path',  type=str,   default="exps/exp1",                                     help='Path to save the score.txt and models')
-parser.add_argument('--initial_model',  type=str,   default="",                                          help='Path of the initial_model')
+parser.add_argument('--initial_model',  type=str,   default=None,                                          help='Path of the initial_model')
 
 ## Model and Loss settings
 parser.add_argument('--C',       type=int,   default=1024,   help='Channel size for the speaker encoder')
@@ -45,9 +45,9 @@ trainLoader = torch.utils.data.DataLoader(trainloader, batch_size = args.batch_s
 Task(**args.__dict__)
 
 if args.initial_model is not None:
-        state_dict = torch.load(args.initial_model, map_location="cpu")["state_dict"]
-        model.load_state_dict(state_dict, strict=True)
-        print("load weight from {}".format(args.initial_model))
+    state_dict = torch.load(args.initial_model, map_location="cpu")["state_dict"]
+    model.load_state_dict(state_dict, strict=True)
+    print("load weight from {}".format(args.initial_model))
 
 checkpoint_callback = ModelCheckpoint(monitor='cosine_eer', save_top_k=100,
            filename="{epoch}_{cosine_eer:.2f}", dirpath=args.save_dir)
