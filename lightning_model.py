@@ -11,7 +11,7 @@ import torch, sys, os, numpy, soundfile, time, pickle
 from tools import *
 
 class Task(LightningModule):
-    def __init__( self, config):
+    def __init__(self, config):
         super().__init__()
         ## ECAPA-TDNN
         self.speaker_encoder = ECAPA_TDNN(C = C).cuda()
