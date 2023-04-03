@@ -53,7 +53,7 @@ lr_monitor = LearningRateMonitor(logging_interval='step')
 AVAIL_GPUS = torch.cuda.device_count()
 trainer = Trainer(
         max_epochs=args.max_epoch,
-        plugins=DDPPlugin(find_unused_parameters=False),
+        plugins=DDPPlugin(find_unused_parameters=True),
         gpus=-1,
         num_sanity_val_steps=0,
         sync_batchnorm=True,
