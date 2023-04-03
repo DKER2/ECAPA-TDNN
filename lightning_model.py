@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import numpy 
 
+import torch.nn.functional as F
 from pytorch_lightning import LightningModule, Trainer, seed_everything
 from loss import AAMsoftmax, Phoneme_SSL_loss
 from model import ECAPA_TDNN
