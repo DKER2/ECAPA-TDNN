@@ -16,6 +16,7 @@ class train_loader(object):
 		self.noiselist = {}
 		augment_files   = glob.glob(os.path.join(musan_path,'*/*/*/*.wav'))
 		for file in augment_files:
+			print(file)
 			if file.split('/')[-4] not in self.noiselist:
 				self.noiselist[file.split('/')[-4]] = []
 			self.noiselist[file.split('/')[-4]].append(file)
