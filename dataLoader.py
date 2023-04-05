@@ -46,8 +46,8 @@ class train_loader(object):
 		# Data Augmentation
 		augtype = random.randint(0,5)
 		#augtype = 0
-        if augtype == 0:
-            audio = audio
+		if augtype == 0:
+			audio = audio
 		elif augtype == 1: # Reverberation
 			audio = self.add_rev(audio)
 		elif augtype == 2: # Babble
