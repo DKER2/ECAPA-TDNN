@@ -44,7 +44,7 @@ class train_loader(object):
 		audio = audio[start_frame:start_frame + length]
 		audio = numpy.stack([audio],axis=0)
 		# Data Augmentation
-		augtype = random.randint(0,5)
+		"""augtype = random.randint(0,5)
 		#augtype = 0
 		if augtype == 0:
 			audio = audio
@@ -58,7 +58,7 @@ class train_loader(object):
 			audio = self.add_noise(audio, 'noise')
 		elif augtype == 5: # Television noise
 			audio = self.add_noise(audio, 'speech')
-			audio = self.add_noise(audio, 'music')
+			audio = self.add_noise(audio, 'music')"""
 		return torch.FloatTensor(audio[0]), audio[0].shape[0], self.data_label[index]
 
 	def __len__(self):
