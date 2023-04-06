@@ -10,6 +10,27 @@ This model is modified and combined based on the following three projects:
 import math, torch, torchaudio
 import torch.nn as nn
 import torch.nn.functional as F
+from patchup import PatchUp
+import numpy as np
+
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+else:
+    device = torch.device("cpu")
+    
+def get_lambda(alpha=1.0):
+    """
+    computes the interpolation policy coefficient in the mixup.
+    Args:
+        alpha: controls the shape of the Beta distribution.
+    Returns:
+        lam: a float number in [0, 1] that is the interpolation policy coefficient.
+    """
+    if alpha > 0.:
+        lam = np.random.beta(alpha, alpha)
+    else:
+        lam = 1.
+    return lam
 
 
 class SEModule(nn.Module):
@@ -131,7 +152,7 @@ class FbankAug(nn.Module):
 
 class ECAPA_TDNN(nn.Module):
 
-    def __init__(self, C):
+    def __init__(self, C, num_classes):
 
         super(ECAPA_TDNN, self).__init__()
 
@@ -162,9 +183,9 @@ class ECAPA_TDNN(nn.Module):
         self.bn5 = nn.BatchNorm1d(3072)
         self.fc6 = nn.Linear(3072, 192)
         self.bn6 = nn.BatchNorm1d(192)
+        self.patchup = PatchUp(block_size=5, gamma=0.9, num_classes=num_classes)
 
-
-    def forward(self, x, aug):
+    def forward(self, x, aug, target=None):
         with torch.no_grad():
             x = self.torchfbank(x)+1e-6
             x = x.log()   
@@ -175,6 +196,9 @@ class ECAPA_TDNN(nn.Module):
         x = self.conv1(x)
         x = self.relu(x)
         x = self.bn1(x)
+
+        if target is not None:
+            target_a, target_b, target_reweighted, x, portion = self.patchup(x, target, lam=get_lambda())        
 
         x1 = self.layer1(x)
         x2 = self.layer2(x+x1)
@@ -196,5 +220,8 @@ class ECAPA_TDNN(nn.Module):
         x = self.bn5(x)
         x = self.fc6(x)
         x = self.bn6(x)
-
-        return x
+        
+        if target is None:
+            return x
+        else:
+            return target_a, target_b, target_reweighted, x, portion

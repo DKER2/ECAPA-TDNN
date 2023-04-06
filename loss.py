@@ -36,3 +36,29 @@ class AAMsoftmax(nn.Module):
         prec1 = accuracy(output.detach(), label.detach(), topk=(1,))[0]
 
         return loss, prec1
+    
+    
+class SoftmaxLoss(nn.Module):
+	def __init__(self, nClasses, **kwargs):
+		super(SoftmaxLoss, self).__init__()
+
+		self.test_normalize = True
+		self.loss_alpha = 1
+		self.loss_beta  = 1
+		self.bce_loss   = nn.BCELoss()
+		self.criterion  = nn.CrossEntropyLoss()
+		self.fc 		= nn.Linear(192, nClasses, bias=True)
+		self.softmax    = nn.Softmax(dim=1)
+		print('Initialised Softmax Loss')
+
+	def forward(self, x, label=None, target_reweighted=None, target_b=None, portion=None):
+		if target_reweighted is None:
+			x 		= self.fc(x)
+			nloss   = self.criterion(x, label)
+		else:
+			output  = self.fc(x)
+			nloss   = self.loss_alpha * self.bce_loss(self.softmax(output), label) * \
+						portion + self.bce_loss(self.softmax(output), target_b) * (1. - portion) + \
+						self.loss_beta * self.bce_loss(self.softmax(output), target_reweighted)
+
+		return nloss, 1

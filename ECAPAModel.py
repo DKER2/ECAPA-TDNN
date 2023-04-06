@@ -5,21 +5,23 @@ This part is used to train the speaker model and evaluate the performances
 import torch, sys, os, tqdm, numpy, soundfile, time, pickle
 import torch.nn as nn
 from tools import *
-from loss import AAMsoftmax
+from loss import AAMsoftmax, SoftmaxLoss
 from model import ECAPA_TDNN
+import numpy as np
 
 class ECAPAModel(nn.Module):
 	def __init__(self, lr, lr_decay, C , n_class, m, s, test_step, **kwargs):
 		super(ECAPAModel, self).__init__()
 		## ECAPA-TDNN
-		self.speaker_encoder = ECAPA_TDNN(C = C).cuda()
+		self.speaker_encoder = ECAPA_TDNN(C = C, num_classes=n_class).cuda()
 		## Classifier
-		self.speaker_loss    = AAMsoftmax(n_class = n_class, m = m, s = s).cuda()
+		self.speaker_loss    = SoftmaxLoss(nClasses = n_class, m = m, s = s).cuda()
 
 		self.optim           = torch.optim.Adam(self.parameters(), lr = lr, weight_decay = 2e-5)
 		self.scheduler       = torch.optim.lr_scheduler.StepLR(self.optim, step_size = test_step, gamma=lr_decay)
 		print(time.strftime("%m-%d %H:%M:%S") + " Model para number = %.2f"%(sum(param.numel() for param in self.speaker_encoder.parameters()) / 1024 / 1024))
-
+		self.patchup_prob = 0.7
+  
 	def train_network(self, epoch, loader):
 		self.train()
 		## Update the learning rate based on the current epcoh
@@ -28,9 +30,14 @@ class ECAPAModel(nn.Module):
 		lr = self.optim.param_groups[0]['lr']
 		for num, (data, labels) in enumerate(loader, start = 1):
 			self.zero_grad()
-			labels            = torch.LongTensor(labels).cuda()
-			speaker_embedding = self.speaker_encoder.forward(data.cuda(), aug = True)
-			nloss, prec       = self.speaker_loss.forward(speaker_embedding, labels)			
+			labels = torch.LongTensor(labels).cuda()
+			r = np.random.rand(1)
+			if r > self.patchup_prob:
+				target_a, target_b, target_reweighted, speaker_embedding, portion = self.speaker_encoder.forward(data.cuda(), aug = True, target=labels)
+				nloss, prec       = self.speaker_loss.forward(speaker_embedding, target_a, target_reweighted, target_b, portion)			
+			else:
+				speaker_embedding = self.speaker_encoder.forward(data.cuda(), aug = True)
+				nloss, prec       = self.speaker_loss.forward(speaker_embedding, labels)			
 			nloss.backward()
 			self.optim.step()
 			index += len(labels)
