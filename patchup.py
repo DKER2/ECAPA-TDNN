@@ -126,7 +126,6 @@ class PatchUp(nn.Module):
         # for the features that lie in the continues blocks that selected for interpolation.
         mask = 1 - holes
         unchanged = mask * x
-        print(torch.all(mask[0, 0].eq(mask[0, 1])), mask.shape)
         if mask_shape == 1:
             total_feats = x.size(1)
         else:
