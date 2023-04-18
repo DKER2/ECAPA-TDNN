@@ -15,8 +15,15 @@ import torch.nn.functional as F
 class SEModule(nn.Module):
     def __init__(self, channels, bottleneck=128):
         super(SEModule, self).__init__()
+        self.attention = nn.Sequential(
+            nn.Conv1d(channels*3, 256, kernel_size=1),
+            nn.ReLU(),
+            nn.BatchNorm1d(256),
+            nn.Tanh(), # I add this layer
+            nn.Conv1d(256, channels, kernel_size=1),
+            nn.Softmax(dim=2),
+            )
         self.se = nn.Sequential(
-            nn.AdaptiveAvgPool1d(1),
             nn.Conv1d(channels, bottleneck, kernel_size=1, padding=0),
             nn.ReLU(),
             # nn.BatchNorm1d(bottleneck), # I remove this layer
@@ -25,7 +32,11 @@ class SEModule(nn.Module):
             )
 
     def forward(self, input):
-        x = self.se(input)
+        t = input.size()[-1]
+        global_input = torch.cat((input,torch.mean(input,dim=2,keepdim=True).repeat(1,1,t), torch.sqrt(torch.var(input,dim=2,keepdim=True).clamp(min=1e-4)).repeat(1,1,t)), dim=1)
+        w = self.attention(global_input)
+        mu = torch.sum(input * w, dim=2, keepdims=True)
+        x = self.se(mu)
         return input * x
 
 class Bottle2neck(nn.Module):
@@ -143,8 +154,8 @@ class ECAPA_TDNN(nn.Module):
 
         self.specaug = FbankAug() # Spec augmentation
 
-        #self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
-        self.shared_TDNN = nn.Sequential(nn.Dropout(p=0.1),
+        self.conv1  = nn.Conv1d(80, C, kernel_size=5, stride=1, padding=2)
+        """self.shared_TDNN = nn.Sequential(nn.Dropout(p=0.1),
                                     nn.Conv1d(in_channels=80, out_channels=C, kernel_size=1),
                                     nn.ReLU(),
                                     nn.BatchNorm1d(C, momentum=0.1, affine=True),
@@ -155,7 +166,7 @@ class ECAPA_TDNN(nn.Module):
                                     nn.ReLU(),
                                     nn.BatchNorm1d(C, momentum=0.1, affine=True),
                                 )
-        self.phoneme_proj = nn.Linear(512, 64)
+        self.phoneme_proj = nn.Linear(512, 64)"""
 
         self.relu   = nn.ReLU()
         self.bn1    = nn.BatchNorm1d(C)
@@ -185,7 +196,7 @@ class ECAPA_TDNN(nn.Module):
             if aug == True:
                 x = self.specaug(x)
 
-        x = self.shared_TDNN(x)
+        x = self.conv1(x)
         x = self.relu(x)
         x = self.bn1(x)
 
